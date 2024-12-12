@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界时钟</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #000000;
+        }
+
+
+        .clock-container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            position: relative;
+            box-shadow: 1px 1px  rgb(143, 143, 255),
+                0 0 2px rgb(0, 136, 255),
+                0 0 4px rgb(0, 0, 255),
+                0 0 5px rgba(180, 180, 255, 0.9);
+        }
+
+        .time-select {
+            margin-bottom: 20px;
+
+        }
+
+        select {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            background-color: #03030314;
+            color: #333;
+            border-radius: 50px;
+        }
+
+        .time {
+            font-size: 30px;
+            font-weight: bold;
+            color: rgb(0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="clock-container">
+        <div class="time-select">
+            <label for="timezone-select">选择时区:</label>
+            <select id="timezone-select">
+                <option value="Asia/Shanghai">中国（上海）</option>
+                <option value="Europe/Warsaw">波兰（华沙）</option>
+                <option value="Asia/Singapore">新加坡</option>
+                <option value="America/New_York">美国（纽约）</option>
+                <option value="Europe/London">英国（伦敦）</option>
+                <option value="Australia/Sydney">澳大利亚（悉尼）</option>
+                <option value="Africa/Johannesburg">南非（约翰内斯堡）</option>
+                <option value="Asia/Tokyo">日本（东京）</option>
+                <option value="America/Los_Angeles">美国（洛杉矶）</option>
+                <option value="Europe/Berlin">德国（柏林）</option>
+                <option value="Asia/Dubai">阿联酋（迪拜）</option>
+                <option value="America/Chicago">美国（芝加哥）</option>
+                <option value="Asia/Kolkata">印度（新德里）</option>
+                <option value="Europe/Paris">法国（巴黎）</option>
+            </select>
+        </div>
+        <div id="time" class="time">加载中...</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+<script>
+
+    // 定义时区和对应的中文名称
+    const timezoneNames = {
+        'Asia/Shanghai': '中国（上海）',
+        'Europe/Warsaw': '波兰（华沙）',
+        'Asia/Singapore': '新加坡',
+        'America/New_York': '美国（纽约）',
+        'Europe/London': '英国（伦敦）',
+        'Australia/Sydney': '澳大利亚（悉尼）',
+        'Africa/Johannesburg': '南非（约翰内斯堡）',
+        'Asia/Tokyo': '日本（东京）',
+        'America/Los_Angeles': '美国（洛杉矶）',
+        'Europe/Berlin': '德国（柏林）',
+        'Asia/Dubai': '阿联酋（迪拜）',
+        'America/Chicago': '美国（芝加哥）',
+        'Asia/Kolkata': '印度（新德里）',
+        'Europe/Paris': '法国（巴黎）'
+    };
+
+    // 获取当前时间并格式化为特定时区的时间
+    function updateTime(timezone) {
+        const options = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+
+        const now = new Date();
+        const timeInZone = now.toLocaleString('zh-CN', { timeZone: timezone, ...options });
+
+        const timeElement = document.getElementById('time');
+        timeElement.textContent = `${timezoneNames[timezone]}: ${timeInZone}`;
+    }
+
+    // 更新时钟并设置时区选择监听
+    function startClock() {
+        const timezoneSelect = document.getElementById('timezone-select');
+        const initialTimezone = timezoneSelect.value;
+
+        updateTime(initialTimezone); // 显示初始时区时间
+        setInterval(() => updateTime(timezoneSelect.value), 1000); // 每秒更新
+
+        timezoneSelect.addEventListener('change', (e) => {
+            updateTime(e.target.value); // 根据选择的时区更新时间
+        });
+    }
+
+    // 页面加载时启动时钟
+    startClock();
+
+
+</script>

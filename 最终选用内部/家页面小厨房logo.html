@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang=>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雯淇妈妈的小厨房</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* 页面基础样式 */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Arial', sans-serif;
+}
+
+/* 容器设置 */
+.container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+/* Logo 样式 */
+.logo {
+  font-size: calc(3rem + 2vw); /* 响应式字体大小 */
+  color: white;
+  font-weight: bold;
+  font-family: 'Arial Black', 'Georgia', serif; /* 加强艺术感 */
+  letter-spacing: 0.1em; /* 适度调整字间距 */
+  transform: scaleY(3); /* 竖向拉长文字 */
+  line-height: 1.1; /* 缩短行距 */
+  text-shadow: 2px 2px 5px rgba(255, 85, 0, 0.4), 0px 0px 15px rgba(255, 255, 255, 0.8);
+}
+
+/* 背景画布 */
+#snow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      雯淇妈妈的小厨房
+    </div>
+  </div>
+  <canvas id="snow"></canvas>
+  <script src="script.js"></script>
+</body>
+</html>
+<script>
+// 设置雪花粒子的属性
+const canvas = document.getElementById('snow');
+const ctx = canvas.getContext('2d');
+
+// 调整画布大小为窗口大小
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// 雪花对象构造函数
+function Snowflake(x, y, speed, radius) {
+  this.x = x;
+  this.y = y;
+  this.speed = speed;
+  this.radius = radius;
+  this.alpha = Math.random() * 0.5 + 0.5; // 随机透明度
+  this.color = 'white'; // 默认雪花颜色为白色
+
+  // 更新雪花位置
+  this.update = function(mouseX, mouseY) {
+    this.y += this.speed; // 下降速度
+    if (this.y > canvas.height) {
+      this.y = -this.radius; // 超过屏幕下边界时从上边界重新开始
+    }
+    
+    // 检查鼠标是否靠近该雪花
+    let dx = mouseX - this.x;
+    let dy = mouseY - this.y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < 100) { // 如果雪花靠近鼠标
+      this.color = 'orange'; // 改为橘红色
+    } else {
+      this.color = 'white'; // 远离鼠标时恢复白色
+    }
+
+    // 绘制雪花
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  };
+}
+
+// 存储雪花
+let snowflakes = [];
+
+// 创建雪花
+function createSnowflakes() {
+  // 限制雪花的数量，减少每次生成的雪花数量
+  if (snowflakes.length < 100) { // 可以调整最大数量，减少数量
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height;
+    let speed = Math.random() * 0.5 + 0.6; // 随机速度
+    let radius = Math.random() * 1 + 1.2; // 随机半径
+    snowflakes.push(new Snowflake(x, y, speed, radius));
+  }
+}
+
+// 鼠标移动位置
+let mouseX = 0;
+let mouseY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+// 绘制雪花并响应鼠标位置
+function animateSnowflakes() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除画布
+  createSnowflakes(); // 创建新雪花
+
+  for (let i = 0; i < snowflakes.length; i++) {
+    snowflakes[i].update(mouseX, mouseY); // 更新雪花的位置并检测鼠标是否靠近
+  }
+
+  requestAnimationFrame(animateSnowflakes); // 循环动画
+}
+
+// 开始动画
+animateSnowflakes();
+
+
+</script>

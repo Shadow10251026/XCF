@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小说存储</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding-top: 100px;
+            /* 将所有内容往下移，调整此值根据需要 */
+        }
+
+        /* 返回按钮样式 */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            z-index: 3;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* 屏幕缩小时，按钮变成小球 */
+        @media (max-width: 768px) {
+            .back-button {
+                width: 40px;
+                height: 40px;
+                padding: 0;
+                border-radius: 50%;
+                font-size: 0;
+                background-color: rgba(0, 0, 0, 0.6);
+                background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23fff" viewBox="0 0 24 24"><path d="M10 19l-7-7 7-7v14z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: 20px 20px;
+            }
+        }
+
+
+
+        .cover-selector {
+            position: absolute;
+            top: 25%;
+            /* 垂直居中 */
+            left: 50%;
+            /* 水平居中 */
+            transform: translate(-50%, -50%);
+            /* 精确居中 */
+            margin-top: 400px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 2px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        }
+
+        @media (max-width: 768px) {
+            .cover-selector {
+                top: -16%;
+                /* 垂直居中 */
+                left: 50%;
+                /* 水平居中 */
+                transform: translate(-50%, -50%);
+            }
+        }
+
+
+        .cover-background {
+            background-image: url('../img/雯淇雪地.png');
+            /* 替换为您的背景图路径 */
+            background-size: cover;
+            /* 覆盖整个容器 */
+            background-position: center;
+            /* 居中显示背景图 */
+            height: 100vh;
+            /* 在大屏幕上背景高度为整个视口高度 */
+            width: 100%;
+            margin-top: -120px;
+        }
+
+        /* 媒体查询：在小屏幕上只显示背景图的顶部三分之一 */
+        @media (max-width: 768px) {
+            .cover-background {
+                background-position: top center;
+                height: 60vh;
+                /* 高度设置为视口的三分之一 */
+                background-repeat: no-repeat;
+            }
+        }
+
+        /* 添加黑色透明遮罩 */
+        .cover-background::before {
+            content: '';
+            position: absolute;
+            /* 替换为您的背景图路径 */
+            background-size: cover;
+            /* 覆盖整个容器 */
+            background-position: center;
+            /* 居中显示背景图 */
+            height: 100vh;
+            /* 在大屏幕上背景高度为整个视口高度 */
+            width: 100%;
+            margin-top: -0px;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* 半透明黑色遮罩 */
+            z-index: 0;
+        }
+
+        @media (max-width: 768px) {
+            .cover-background::before {
+                background-position: top center;
+                height: 60vh;
+                /* 高度设置为视口的三分之一 */
+                background-repeat: no-repeat;
+                background-color: rgba(0, 0, 0, 0.5);
+                /* 半透明黑色遮罩 */
+                z-index: 0;
+            }
+        }
+
+
+
+        /* 封面内容样式 */
+        .cover-content {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 标题样式 */
+        .main-title {
+            font-size: 5em;
+            margin-top: 200px;
+            white-space: nowrap;
+            /* 防止标题换行 */
+        }
+
+        /* 副标题样式 */
+        .sub-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            white-space: nowrap;
+            /* 防止副标题换行 */
+        }
+
+
+        .divider-text {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 0 10px;
+            transform: translateX(-50%);
+            font-size: 1em;
+            color: white;
+        }
+
+        /* 响应式设计：针对小屏幕优化标题和副标题 */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 5em;
+                margin-top: -50px;
+            }
+
+            .sub-title {
+                font-size: 2.2em;
+            }
+
+            .divider-text {
+                font-size: 0.9em;
+            }
+        }
+
+
+
+        .filter-container {
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .filter-container select {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .filter-container select:hover {
+            background-color: #f0f0f0;
+        }
+
+        .novel-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .novel-card {
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border-left: 5px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .novel-card[data-category="short"] {
+            border-left-color: #ffbaaa;
+        }
+
+        .novel-card[data-category="medium"] {
+            border-left-color: #ffebb7;
+        }
+
+        .novel-card[data-category="long"] {
+            border-left-color: #e2ffab;
+        }
+
+        .novel-img {
+            width: 100%;
+            height: 140px;
+        }
+
+        @media (max-width: 768px) {
+            .novel-img {
+                width: 100%;
+                height: auto;
+            }
+
+        }
+
+        .novel-info {
+            padding: 15px;
+        }
+
+        .novel-info h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .novel-info p {
+            font-size: 1em;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .category-label {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.9em;
+            border-radius: 5px;
+        }
+
+        .like-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .like-icon {
+            font-size: 40px;
+            color: #ddd;
+            margin-right: 8px;
+            padding: 8px;
+            transition: transform 0.2s ease-in-out, color 0.3s, border-color 0.3s;
+        }
+
+        .like-btn.active .like-icon {
+            color: red;
+            border-color: red;
+            transform: scale(1.3);
+        }
+
+        .like-btn:hover .like-icon {
+            color: #ff6666;
+            border-color: #ff6666;
+            transform: scale(1.1);
+        }
+
+        /* 长按时显示大爱心动画 */
+        .long-press .like-icon {
+            animation: heartBeat 0.6s infinite alternate;
+        }
+
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.5);
+            }
+        }
+
+        .novel-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .novel-container {
+                justify-content: flex-start;
+            }
+
+            .novel-card {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .novel-container {
+                flex-wrap: nowrap;
+            }
+
+            .novel-card {
+                width: 30%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 添加封面背景 -->
+
+
+
+    <div class="cover-background">
+        <button class="back-button" onclick="window.location.href='../网页开始界面/2.主页面.html'">返回主页</button>
+        <!-- 封面选择区域 -->
+        <div class="cover-selector">
+            <label for="cover-select"></label>
+            <select id="cover-select" onchange="changeCover()">
+                <option value="../img/雯淇雪地.png">哈尔滨</option>
+                <option value="../img/运动会牵手.jpg">运动员</option>
+                <option value="../img/曼陀罗.jpg">曼陀罗</option>
+                <option value="../img/豆椰打架.jpg">豆椰打架</option>
+            </select>
+        </div>
+        <div class="cover-background" id="cover-background">
+            <div class="cover-content">
+                <h1 class="main-title">小说</h1>
+                <h2 class="sub-title">前菜</h2>
+                <p>—请好好选课-影子版—</p>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="filter-container">
+        <select id="category-select" onchange="filterNovels()">
+            <option value="all">全部</option>
+            <option value="short">短篇</option>
+            <option value="medium">中篇</option>
+            <option value="long">长篇</option>
+        </select>
+    </div>
+
+    <div class="novel-container" id="novel-container">
+        <!-- 第一个小说 -->
+        <div class="novel-card" data-category="short">
+            <div class="category-label">短篇</div>
+            <img src="../img/雯淇雪地.png" alt="Novel 1" class="novel-img">
+            <div class="novel-info">
+                <h3>记录：我们的第一次看雪</h3>
+                <p>现实向｜从一十七到一二二，以文字的形式，想象她们在哈尔滨，记录第一次看雪的故事。</p>
+            </div>
+            <a href="novel1.html" class="novel-link"></a>
+            <button class="like-btn" id="like-btn-1" onmousedown="startLongPress(1)" onmouseup="endLongPress(1)"
+                onmouseleave="endLongPress(1)" onclick="likeNovel(1, event)">
+                <span id="like-icon-1" class="like-icon">♡</span>
+                <span id="like-count-1">0</span>
+            </button>
+        </div>
+
+        <!-- 第二个小说 -->
+        <div class="novel-card" data-category="short">
+            <div class="category-label">短篇</div>
+            <img src="../img/运动会牵手跑2.png" alt="Novel 2" class="novel-img">
+            <div class="novel-info">
+                <h3>记录：我们的第一次看雪</h3>
+                <p>现实向｜从一十七到一二二，以文字的形式，想象她们在哈尔滨，记录第一次看雪的故事。</p>
+            </div>
+            <a href="novel2.html" class="novel-link"></a>
+            <button class="like-btn" id="like-btn-2" onmousedown="startLongPress(2)" onmouseup="endLongPress(2)"
+                onmouseleave="endLongPress(2)" onclick="likeNovel(2, event)">
+                <span id="like-icon-2" class="like-icon">♡</span>
+                <span id="like-count-2">0</span>
+            </button>
+        </div>
+
+        <!-- 第三个小说 -->
+        <div class="novel-card" data-category="long">
+            <div class="category-label">长篇</div>
+            <img src="../img/雯淇雪地.png" alt="Novel 3" class="novel-img">
+            <div class="novel-info">
+                <h3>记录：我们的第一次看雪</h3>
+                <p>现实向｜从一十七到一二二，以文字的形式，想象她们在哈尔滨，记录第一次看雪的故事。</p>
+            </div>
+            <a href="novel3.html" class="novel-link"></a>
+            <button class="like-btn" id="like-btn-3" onmousedown="startLongPress(3)" onmouseup="endLongPress(3)"
+                onmouseleave="endLongPress(3)" onclick="likeNovel(3, event)">
+                <span id="like-icon-3" class="like-icon">♡</span>
+                <span id="like-count-3">0</span>
+            </button>
+        </div>
+
+        <!-- 第四个小说 -->
+        <div class="novel-card" data-category="short">
+            <div class="category-label">短篇</div>
+            <img src="../img/雯淇雪地.png" alt="Novel 4" class="novel-img">
+            <div class="novel-info">
+                <h3>记录：我们的第一次看雪</h3>
+                <p>现实向｜从一十七到一二二，以文字的形式，想象她们在哈尔滨，记录第一次看雪的故事。</p>
+            </div>
+            <a href="novel4.html" class="novel-link"></a>
+            <button class="like-btn" id="like-btn-4" onmousedown="startLongPress(4)" onmouseup="endLongPress(4)"
+                onmouseleave="endLongPress(4)" onclick="likeNovel(4, event)">
+                <span id="like-icon-4" class="like-icon">♡</span>
+                <span id="like-count-4">0</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 初始化点赞数据
+        let storedLikes = JSON.parse(localStorage.getItem('likes')) || { 1: 0, 2: 0, 3: 0, 4: 0 };  // 默认点赞数为0
+        let likedStatus = JSON.parse(localStorage.getItem('likedStatus')) || { 1: false, 2: false, 3: false, 4: false };  // 默认状态为未点赞
+
+        // 更新页面上的点赞次数  
+        function updateLikeCount() {
+            for (let novelId in storedLikes) {
+                document.getElementById(`like-count-${novelId}`).innerText = storedLikes[novelId];
+                // 如果已经点赞，将爱心图标标记为活跃  
+                if (likedStatus[novelId]) {
+                    document.getElementById(`like-icon-${novelId}`).classList.add('active');
+                } else {
+                    document.getElementById(`like-icon-${novelId}`).classList.remove('active'); // 确保未点赞时移除活跃状态  
+                }
+            }
+        }
+
+        // 更新点赞状态  
+        function likeNovel(novelId, event) {
+            // 如果已经点赞，不做任何操作  
+            if (likedStatus[novelId]) {
+                return;
+            }
+
+            // 阻止事件冒泡，避免跳转  
+            event.stopPropagation();
+            event.preventDefault(); // 防止链接跳转  
+
+            // 增加点赞数  
+            storedLikes[novelId]++;
+            console.log(`Novel ${novelId} liked: ${storedLikes[novelId]}`); // 调试信息  
+
+            // 更新点赞状态  
+            likedStatus[novelId] = true;
+
+            // 更新localStorage中的点赞数据和点赞状态  
+            localStorage.setItem('likes', JSON.stringify(storedLikes));
+            localStorage.setItem('likedStatus', JSON.stringify(likedStatus));
+
+            // 更新页面上的点赞数  
+            updateLikeCount(); // 直接更新页面  
+
+            // 更新爱心图标颜色  
+            const likeButton = document.getElementById(`like-icon-${novelId}`);
+            likeButton.classList.add('active');  // 切换点赞状态  
+        }
+
+
+        function filterNovels() {
+            let selectedCategory = document.getElementById("category-select").value;
+            let novels = document.querySelectorAll(".novel-card");
+
+            novels.forEach(function (card) {
+                let category = card.getAttribute("data-category");
+
+                if (selectedCategory === "all" || selectedCategory === category) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+
+        // 页面加载时更新显示  
+        window.onload = function () {
+            updateLikeCount();
+            console.log('Likes:', storedLikes); // 调试信息  
+            console.log('Liked Status:', likedStatus); // 调试信息  
+        };
+    </script>
+</body>
+
+</html>
+
+
+<script>
+    function changeCover() {
+        const selectedCover = document.getElementById('cover-select').value;
+        document.getElementById('cover-background').style.backgroundImage = `url('${selectedCover}')`;
+    }
+
+</script>
+
+<!--------返回菜单-------->
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

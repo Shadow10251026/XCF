@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主食-雯淇漫画库</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+
+
+        body {
+            color: #333;
+            padding: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+       
+   
+
+        /* 头部样式 */
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            /* 允许换行 */
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #000000, #000000);
+            background-size: 200% 200%;
+            animation: gradientAnimation 5s ease infinite;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            position: relative;
+        }
+
+        header:hover {
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-family: 'Roboto', sans-serif;
+            transition: color 0.3s ease;
+        }
+
+        header h1:hover {
+            color: #ffa45a;
+        }
+
+        /* 搜索框样式 */
+        header input {
+            width: 1000px;
+            padding: 12px;
+            border-radius: 30px;
+            border: 2px solid #aaa;
+            font-size: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        header input:focus {
+            border-color: #01376e;
+        }
+
+        /* 返回按钮样式 */
+        .back-button {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            font-size: 10px;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 书架弹窗样式 */
+        #bookshelf-popup {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 70%;
+            overflow-y: auto;
+            width: 80%;
+            box-sizing: border-box;
+        }
+
+        /* 书架列表 */
+        #bookshelf-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 每个书架项 */
+        #bookshelf-list li {
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        /* 书架项悬停效果 */
+        #bookshelf-list li:hover {
+            background: #d1d8e0;
+            transform: translateX(5px);
+        }
+
+        /* 书架项链接样式 */
+        #bookshelf-list li a {
+            text-decoration: none;
+            color: #2a3a58;
+            font-weight: bold;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        /* 链接悬停效果 */
+        #bookshelf-list li a:hover {
+            color:#4f5adc;
+        }
+
+        .button书架{
+            color: #ffffff;
+            background-color: #4f5adc;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 2px white solid;
+        }
+
+        /* 主内容区 */
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-evenly;
+            margin-top: 20px;
+        }
+
+        /* 漫画卡片样式 */
+        .comic-card {
+            background-color: white;
+            border: 2px #000966 solid;
+            width: 240px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .comic-card img {
+            width: 100%;
+            height: 68%;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .comic-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .comic-card h3 {
+            margin: 2px 0 2px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .comic-card p {
+            font-size: 14px;
+            color: #777;
+            margin: 5px 0;
+        }
+
+        .comic-card .inspiration {
+            font-style: italic;
+            color: #888;
+        }
+
+        /* 点赞按钮 */
+        .like-button {
+            background: linear-gradient(135deg, #0a2f54, #01052c);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 12px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .like-button i {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+
+        .like-button.liked i {
+            color: red;
+        }
+
+        .like-button:hover {
+            background: linear-gradient(135deg, #1c2181, #7a87e0);
+            transform: scale(1.05);
+        }
+
+        .like-button:hover i {
+            color: #ff5a5f;
+        }
+
+        .like-count {
+            font-weight: 600;
+        }
+
+        /* 卡片悬停效果 */
+        .comic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .comic-card h3:hover {
+            color: #007bb5;
+        }
+
+        .comic-card p:hover {
+            color: #333;
+        }
+
+        /* 响应式布局 */
+        @media (max-width: 4oopx) {
+            .comic-card {
+                width: 90%;
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+
+            .comic-card img {
+                width: 100%;
+                max-height: 280px;
+            }
+        }
+
+        /* 书架弹窗样式 */
+        #bookshelf-popup {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 70%;
+            overflow-y: auto;
+        }
+
+
+
+
+
+        :root.darkmode {
+    --text-color: #fff;
+    --background-color: #333;
+    --button-bg-color: #fff;
+    --button-text-color: #333;
+}
+
+:root {
+    background-color: var(--background-color, #fff);
+    color: var(--text-color, #333);
+}
+
+.mode-switch {
+    display: inline-block;
+    width: 50px; /* 设置按钮的宽度 */
+    height: 50px; /* 设置按钮的高度 */
+    border-radius: 50%; /* 使按钮变成圆形 */
+    cursor: pointer;
+    background-color: var(--button-bg-color, #333); /* 背景色 */
+    color: var(--button-text-color, #fff); /* 文字颜色 */
+    text-align: center; /* 使文本居中 */
+    line-height: 50px; /* 设置文本的垂直居中 */
+    font-size: 20px; /* 图标大小 */
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.mode-switch:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+}
+
+
+
+.footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    color: #888;
+    margin-top: 40px; /* 将版权信息和页面其他内容分开 */
+}
+
+.footer p {
+    margin: 0;
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <button class="back-button" onclick="window.location.href='../网页开始界面/2.主页面.html'"><i
+                class="fas fa-arrow-left"></i></button>
+        <h1>主食-漫画</h1>
+        
+        <button class="mode-switch" id="modeSwitch">❤️</button>
+        <div id="bookshelf" style="cursor: pointer; color: #fff; font-size: 20px;">
+            书架
+        </div>
+        
+        <input type="text" id="search" placeholder="搜索漫画..." />
+        
+
+    </header>
+
+    <!-- 书架弹窗 -->
+    <div id="bookshelf-popup">
+        <h3>我的书架</h3>
+        <ul id="bookshelf-list" calss="bookshelf-list"></ul>
+        <button onclick="closeBookshelf()" class="button书架">关闭</button>
+    </div>
+    <!-----漫画1------->
+    <main id="comic-container">
+        <div class="comic-card" data-comic-id="1">
+            <a href="https://example.com/comic1" target="_blank">
+                <img src="../漫画封面/叫姐姐.jpg" alt="漫画封面">
+            </a>
+            <h3>《叫姐姐》</h3>
+            <p>作者：影子｜L-shadow-</p>
+            <p class="inspiration">灵感提供者：瓜子</p>
+            <button class="like-button"><i class="fas fa-heart"></i> <span class="like-count">0</span></button>
+        </div>
+        <!-----漫画2------->
+        <div class="comic-card" data-comic-id="2">
+            <a href="https://example.com/comic2" target="_blank">
+                <img src="https://via.placeholder.com/200x300" alt="漫画封面">
+            </a>
+            <h3>《漫画标题 2》</h3>
+            <p>作者：作者名2</p>
+            <p class="inspiration">灵感提供者：李四</p>
+            <button class="like-button"><i class="fas fa-heart"></i> <span class="like-count">0</span></button>
+        </div>
+        <!-----漫画3------->
+        <div class="comic-card" data-comic-id="3">
+            <a href="https://example.com/comic3" target="_blank">
+                <img src="https://via.placeholder.com/200x300" alt="漫画封面">
+            </a>
+            <h3>《漫画标题 3》</h3>
+            <p>作者：作者名3</p>
+            <p class="inspiration">灵感提供者：王五</p>
+            <button class="like-button"><i class="fas fa-heart"></i> <span class="like-count">0</span></button>
+        </div>
+
+
+        <footer class="footer">
+            <p>&copy; 2025 雯淇妈妈的小厨房｜主食-漫画库 版权归影子所有。</p>
+        </footer>
+        
+    </main>
+
+    <script>
+        // 获取和保存点赞记录
+        function getLikedComics() {
+            const likedComics = localStorage.getItem("likedComics");
+            return likedComics ? JSON.parse(likedComics) : [];
+        }
+
+        // 保存点赞记录
+        function saveLikedComics(likedComics) {
+            localStorage.setItem("likedComics", JSON.stringify(likedComics));
+        }
+
+        // 更新点赞按钮状态
+        function updateLikeButton(button, comicId) {
+            const likedComics = getLikedComics();
+            const liked = likedComics.some(comic => comic.id === comicId);
+            const likeCountElement = button.querySelector(".like-count");
+
+            if (liked) {
+                button.classList.add("liked");
+                likeCountElement.textContent = "1";
+            } else {
+                button.classList.remove("liked");
+                likeCountElement.textContent = "0";
+            }
+        }
+
+        // 点击点赞按钮
+        document.querySelectorAll(".like-button").forEach(button => {
+            button.addEventListener("click", function () {
+                const comicId = this.closest(".comic-card").getAttribute("data-comic-id");
+                const comicTitle = this.closest(".comic-card").querySelector("h3").textContent;
+                const comicLink = this.closest(".comic-card").querySelector("a").href;
+                const likedComics = getLikedComics();
+                const likedIndex = likedComics.findIndex(comic => comic.id === comicId);
+
+                if (likedIndex === -1) {
+                    // 未点赞，进行点赞
+                    likedComics.push({ id: comicId, title: comicTitle, link: comicLink });
+                } else {
+                    // 已点赞，取消点赞
+                    likedComics.splice(likedIndex, 1);
+                }
+
+                // 更新本地存储
+                saveLikedComics(likedComics);
+
+                // 更新点赞按钮的状态
+                updateLikeButton(this, comicId);
+            });
+        });
+
+        // 显示书架弹窗
+        document.getElementById("bookshelf").addEventListener("click", () => {
+            const likedComics = getLikedComics();
+            const bookshelfList = document.getElementById("bookshelf-list");
+            bookshelfList.innerHTML = "";
+
+            likedComics.forEach(comic => {
+                const listItem = document.createElement("li");
+                const link = document.createElement("a");
+                link.href = comic.link;
+                link.textContent = comic.title;
+                listItem.appendChild(link);
+                bookshelfList.appendChild(listItem);
+            });
+
+            document.getElementById("bookshelf-popup").style.display = "block";
+        });
+
+        // 关闭书架弹窗
+        function closeBookshelf() {
+            document.getElementById("bookshelf-popup").style.display = "none";
+        }
+
+        // 初始化点赞按钮状态
+        window.addEventListener("DOMContentLoaded", () => {
+            const likedComics = getLikedComics();
+
+            document.querySelectorAll(".like-button").forEach(button => {
+                const comicId = button.closest(".comic-card").getAttribute("data-comic-id");
+                updateLikeButton(button, comicId);
+            });
+        });
+
+
+
+        const searchInput = document.getElementById('search');
+        const comicCards = document.querySelectorAll('.comic-card');
+
+        // 搜索功能
+        searchInput.addEventListener('keyup', () => {
+            const searchText = searchInput.value.toLowerCase();
+
+            comicCards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const author = card.querySelector('p').innerText.toLowerCase();
+                const inspiration = card.querySelector('.inspiration').innerText.toLowerCase();
+
+                if (title.includes(searchText) || author.includes(searchText) || inspiration.includes(searchText)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+
+<script>
+    const modeSwitchButton = document.getElementById('modeSwitch');
+    let isNightMode = false;
+
+    modeSwitchButton.addEventListener('click', () => {
+        isNightMode = !isNightMode;
+        applyMode();
+    });
+
+    function applyMode() {
+        document.documentElement.classList.toggle('darkmode');
+        if (isNightMode) {
+            modeSwitchButton.textContent = '☀️';
+        } else {
+            modeSwitchButton.textContent = '🌙';
+        }
+    }
+</script>
+</body>
+
+</html>
